@@ -1,6 +1,5 @@
 import pandas as pd
 import datetime
-import matplotlib.pyplot as plt
 import numpy as np
 import snowpro
 import sys
@@ -100,7 +99,6 @@ def sim_gtype(g1,g2):
     return dist_g
 
 
-import math
 
 
 dist_gtype_list = []

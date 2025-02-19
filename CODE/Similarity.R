@@ -1,7 +1,4 @@
-#!/home/fmeloche/miniconda3/envs/r_env/bin Rscript
-
 # R script to run the similarity snow profile assessment
-
 # loading library
 library(dtw)
 library(sarp.snowprofile)
