@@ -45,7 +45,7 @@ def run_snowpack(dir_name):
 
         # Run the R script
         rscript_process = subprocess.Popen(
-            ["/home/fmeloche/miniconda3/envs/r_env/bin/Rscript", rscript_path, ROOT, dir_name],
+            ["Rscript", rscript_path, ROOT, dir_name],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
         )
 
@@ -76,7 +76,7 @@ def run_snowpack(dir_name):
 
 
 # Run Snowpack in parallel
-with concurrent.futures.ProcessPoolExecutor(max_workers=4) as executor:
+with concurrent.futures.ProcessPoolExecutor(max_workers=24) as executor:
     executor.map(run_snowpack, dir_names)
 
 t2 = time.perf_counter()
@@ -85,6 +85,3 @@ print(f'Finished in {t2-t1} seconds')
 # Force garbage collection to free memory
 import gc
 gc.collect()
-
-# Check memory usage after execution
-print(f"Memory usage: {psutil.virtual_memory().percent}%")

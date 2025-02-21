@@ -8,7 +8,7 @@ import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 warnings.simplefilter(action='ignore', category=UserWarning)
 
-from snowpacktools.snowpro import pro_helper
+import pro_helper
 
 def read_pro(path,res='1h',keep_soil=False, consider_surface_hoar=True):
     """Reads a .PRO file and returns a dictionary with timestamps as keys and values being another dictionary with
