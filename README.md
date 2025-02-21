@@ -10,4 +10,4 @@ This was done at Fidelity weather station in Rogers Pass Canada with weather obs
 
 3. The script Similarity_surf.py computes the snow grain type similariy between SNOWPACK and the daily manual obersations of snow surface grain types at Fidelity weather station. It also compute the the F1 score and confusion matrix of the prediction of surface hoar (SH) and precipitation particles (PP).
 
-#. The R script Similarity assess the snow profile similarity of three snow profiles made at Fidelity weather station (camml files in profil_2018-2019 directory).
+4. The R script Similarity assess the snow profile similarity of three snow profiles made at Fidelity weather station (camml files in profil_2018-2019 directory).
