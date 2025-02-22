@@ -76,7 +76,7 @@ def run_snowpack(dir_name):
 
 
 # Run Snowpack in parallel
-with concurrent.futures.ProcessPoolExecutor(max_workers=24) as executor:
+with concurrent.futures.ProcessPoolExecutor(max_workers=24) as executor: #adjust max workers for the number of CPU you have
     executor.map(run_snowpack, dir_names)
 
 t2 = time.perf_counter()
