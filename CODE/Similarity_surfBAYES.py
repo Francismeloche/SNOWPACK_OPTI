@@ -99,8 +99,9 @@ def sim_gtype(g1,g2):
 
 
 
-dist_gtype_list = []
+ddist_gtype_list = []
 dist_gsize_list = []
+dist_hs_list = []
 gty_obs_list = []
 gsz_obs_list = []
 gty_mod_list = []
@@ -113,9 +114,12 @@ for idx,d in df_grainOBS.iterrows():
 
     gszobs = d['SurfaceSize']
     gszmod = df_grainMOD['gsize'].loc[df_grainMOD['date'] == date].values[0]
+    hs = d['Snowpack']
+    hsmod = df_grainMOD['hs'].loc[df_grainMOD['date'] == date].values[0]
+    err_hs = (hs-hsmod)**2
     if gobs is not np.nan and gmod is not np.nan:
         dist_g = sim_gtype(gobs,gmod)
-        dist_gsize = ((gszobs - gszmod)**2)
+        dist_gsize = ((gszobs - gszmod)**2)#**0.5
     else:
         dist_g = np.nan
         dist_gsize = np.nan
@@ -125,10 +129,12 @@ for idx,d in df_grainOBS.iterrows():
     gsz_mod_list.append(gszmod)
     dist_gtype_list.append(dist_g)
     dist_gsize_list.append(dist_gsize)
+    dist_hs_list.append(err_hs)
     date_list.append(date)
-dist_df = pd.DataFrame({'date': date_list, 'gtype_obs': gty_obs_list, 'gsize_obs':gsz_obs_list,'gtype_mod': gty_mod_list, 'gsize_mod':gsz_mod_list, 'dist_gtype':dist_gtype_list, 'dist_gsize':dist_gsize_list})
+dist_df = pd.DataFrame({'date': date_list, 'gtype_obs': gty_obs_list, 'gsize_obs':gsz_obs_list,'gtype_mod': gty_mod_list, 'gsize_mod':gsz_mod_list, 'dist_gtype':dist_gtype_list, 'dist_gsize':dist_gsize_list, 'dist_hs':dist_hs_list})
 
 #group the result per snow grain type mod
+rmse_hs =dist_df['dist_hs'].mean()**0.5
 grouped_gtype = dist_df.groupby('gtype_mod')['dist_gtype'].mean()
 grouped_gsize = dist_df.groupby('gtype_mod')['dist_gsize'].mean()
 
@@ -154,7 +160,8 @@ PP_F1 = 2*PP_TP['gtype_obs']/(2*PP_TP['gtype_obs'] + PP_FP['gtype_obs'] + PP_FN[
 
 meanTPSH_dgsize = SH_realmod['dist_gsize'].mean()**0.5
 meanTPPP_dgsize = PP_realmod['dist_gsize'].mean()**0.5
-F1 = 1-(SH_F1*0.5 + PP_F1*0.5)
+F1 = 1-(SH_F1*0.6 + PP_F1*0.4)
+SHsz_norm = 1/(1-meanTPSH_dgsize)
 print('F1: ', F1)
 
 #df_SHfinal = pd.DataFrame({'SH_TP':SH_TP['gtype_obs'], 'SH_TN':SH_TN['gtype_obs'], 'SH_FN':SH_FN['gtype_obs'], 'SH_FP':SH_FP['gtype_mod'], 'SH_tot':SH_tot['gtype_obs'], 'F1':F1, 'meanTPSH_dgsize':meanTPSH_dgsize}, index=[0])

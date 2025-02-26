@@ -142,8 +142,8 @@ return(simdf)
 args <- commandArgs(trailingOnly = TRUE)
 
 # Print received arguments
-print(paste("Argument 1:", args[1]))
-print(paste("Argument 2:", args[2]))
+#print(paste("Argument 1:", args[1]))
+#print(paste("Argument 2:", args[2]))
 
 # --- AXLIZ --- #
 #pro_folder   <- './FID'
@@ -157,7 +157,6 @@ simdfall <- data.frame(simu_id = c(),date = c(), simi = c(), wl = c(), cr = c(),
 
 pro_file     <- 'output/30_55_FID_1.0_PSUM_15m.pro'
 PROFS_MOD   <- paste(path_topro_folder, pro_file, sep="/")
-print(paste('profs',PROFS_MOD))
 caaml_folder <- './profil_2018-2019'
 #caaml_file   <- '20190208.caaml'
 # --- AXLIZ --- #
@@ -181,5 +180,5 @@ for (i in profile_vector){
     simdate <- data.frame( sim_id = c(pro_folder), date = c(substring(i,1,8)), simi = c(simval$sim), wl = c(simval$simDF$wl), cr = c(simval$simDF$cr), pp = c(simval$simDF$pp), bulk = c(simval$simDF$bulk))
     simdfall <- rbind(simdfall,simdate)}
 simdf1 <- data.frame( sim_id = c(pro_folder), simi = c(mean(simi)), wl = c(mean(simi_wl)), cr = c(mean(simi_cr)), pp = c(mean(simi_pp)), bulk = c(mean(simi_bulk)))
-
+#print(paste('simi:', 1 - mean(simi)))
 write.csv(simdf1, paste('./FID_OPTIMIZATION/profil', paste(pro_folder,"sim_metstation.csv", sep = '_'), sep = '/'), row.names = FALSE)
