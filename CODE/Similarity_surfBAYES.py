@@ -30,18 +30,22 @@ profs,meta = snowpro.read_pro( snowpro_path, res='1d', keep_soil=False, consider
 date = []
 gtype_season = []
 gsize_season = []
+hs_season = []
 for d,pro  in profs.items():
     date.append(d)
     gtype = pro['graintype']
     gsize = pro['grain size (mm)']
+    hs = pro['height']
     if len(gtype) > 0 :
         gtype_season.append(gtype[-1][0])
         gsize_season.append(gsize[-1])
+        hs_season.append(hs[-1])
     else:
         gtype_season.append('NA')
         gsize_season.append('NA')
+        hs_season.append('NA')
 
-df_grainMOD = pd.DataFrame({'datetime':date, 'gtype': gtype_season, 'gsize': gsize_season})
+df_grainMOD = pd.DataFrame({'datetime':date, 'gtype': gtype_season, 'gsize': gsize_season, 'hs':hs_season})
 df_grainMOD['date'] = df_grainMOD['datetime'].dt.date
 df_grainMOD['date'] = pd.to_datetime(df_grainMOD['date'])
 df_grainMOD =df_grainMOD.loc[(df_grainMOD['datetime'] > '2018-10-01 00:00:00') & (df_grainMOD['datetime'] <= '2019-05-1 00:00:00')]
@@ -99,7 +103,7 @@ def sim_gtype(g1,g2):
 
 
 
-ddist_gtype_list = []
+dist_gtype_list = []
 dist_gsize_list = []
 dist_hs_list = []
 gty_obs_list = []
@@ -134,10 +138,10 @@ for idx,d in df_grainOBS.iterrows():
 dist_df = pd.DataFrame({'date': date_list, 'gtype_obs': gty_obs_list, 'gsize_obs':gsz_obs_list,'gtype_mod': gty_mod_list, 'gsize_mod':gsz_mod_list, 'dist_gtype':dist_gtype_list, 'dist_gsize':dist_gsize_list, 'dist_hs':dist_hs_list})
 
 #group the result per snow grain type mod
-rmse_hs =dist_df['dist_hs'].mean()**0.5
+rmse_hs =dist_df['dist_hs'].sum()**0.5
 grouped_gtype = dist_df.groupby('gtype_mod')['dist_gtype'].mean()
 grouped_gsize = dist_df.groupby('gtype_mod')['dist_gsize'].mean()
-
+dist_gtype = dist_df['dist_gtype'].sum()**0.5
 
 # Compute the confusion matrix of the SH modelisation
 SH_TP = dist_df[(dist_df['dist_gtype'] < 0.1) & (dist_df['gtype_obs'] == 'SH')].count()
@@ -160,9 +164,10 @@ PP_F1 = 2*PP_TP['gtype_obs']/(2*PP_TP['gtype_obs'] + PP_FP['gtype_obs'] + PP_FN[
 
 meanTPSH_dgsize = SH_realmod['dist_gsize'].mean()**0.5
 meanTPPP_dgsize = PP_realmod['dist_gsize'].mean()**0.5
-F1 = 1-(SH_F1*0.6 + PP_F1*0.4)
-SHsz_norm = 1/(1-meanTPSH_dgsize)
-print('F1: ', F1)
+F1 = 1-(SH_F1*0.99 + PP_F1*0.01)
+rmseHS = (rmse_hs/100)
+print('RMSE_HS: ', rmseHS)
+print('F1: ', dist_gtype)
 
 #df_SHfinal = pd.DataFrame({'SH_TP':SH_TP['gtype_obs'], 'SH_TN':SH_TN['gtype_obs'], 'SH_FN':SH_FN['gtype_obs'], 'SH_FP':SH_FP['gtype_mod'], 'SH_tot':SH_tot['gtype_obs'], 'F1':F1, 'meanTPSH_dgsize':meanTPSH_dgsize}, index=[0])
 #df_PPfinal = pd.DataFrame({'PP_TP':PP_TP['gtype_obs'], 'PP_TN':PP_TN['gtype_obs'], 'PP_FN':PP_FN['gtype_obs'], 'PP_FP':PP_FP['gtype_mod'], 'PP_tot':PP_tot['gtype_obs'], 'F1':F1, 'meanTPPP_dgsize':meanTPPP_dgsize}, index=[0])

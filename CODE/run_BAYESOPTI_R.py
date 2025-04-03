@@ -22,11 +22,14 @@ ROOT = os.path.abspath("./MODEL_15minBAYES/")
 
 # Define the search space for SNOWPACK parameters
 space = [
-    Real(-1, 5, name='thresh_rain'),
-    Real(-1, 5, name='hoar_thresh_TA'),
+    Real(-1, 3, name='thresh_rain'),
+    Real(-1, 3, name='hoar_thresh_TA'),
     Real(0.6, 1, name='hoar_thresh_RH'),
-    Real(1, 30, name='hoar_thresh_VW')
-    #Categorical(['NEUTRAL', 'MO_LOG_LINEAR','MO_SCHLOEGL_MULTI','MO_SCHLOEGL_MULTI_OFFSET'], name = 'atmo_model')
+    Real(1, 10, name='hoar_thresh_VW'),
+    Integer(1,3, name = 'wind_scaling'),
+    Categorical(['NEUTRAL', 'MO_LOG_LINEAR','MO_SCHLOEGL_MULTI','MO_SCHLOEGL_MULTI_OFFSET'], name = 'atmo_model'),
+    Categorical(['LEHNING_0','LEHNING_1', 'LEHNING_2','SCHMUCKI_GSZ','SCHMUCKI_OGS'], name = 'albedo_model'),
+    Categorical(['LEHNING_NEW','BELLAIRE','ZWART','PAHAUT','NIED','VANKAMPENHOUT'], name = 'HN_density_model')
 ]
 
 import shutil
@@ -35,7 +38,7 @@ import uuid
 
 def run_snowpack(parameters):
     # Unpack parameters
-    thresh_rain, hoar_thresh_TA, hoar_thresh_RH, hoar_thresh_VW = parameters
+    thresh_rain, hoar_thresh_TA, hoar_thresh_RH, hoar_thresh_VW, wind_scaling, atmo_model, albedo_model, HN_density_model = parameters
 
     # Create a unique temporary directory for this run in PARALLEL RUNNING
     temp_dir = os.path.join(ROOT, "temp_run", f"run_{uuid.uuid4().hex}")  # Unique per process
@@ -57,27 +60,29 @@ def run_snowpack(parameters):
     lines[11] = f'STATION1 = FidelityPatched_15min_2019.smet\n'
     lines[20] = f'METEOPATH = {temp_dir}/output\n'
     lines[31] = f'SNOWPATH = {temp_dir}/output\n'
-    #lines[65] = f'ATMOSPHERIC_STABILITY = {atmo_model}\n'
+    lines[65] = f'ATMOSPHERIC_STABILITY = {atmo_model}\n'
     lines[84] = f'THRESH_RAIN = {thresh_rain}\n'
-    #lines[81] = f'WIND_SCALING_FACTOR = {wind_scaling}\n'
+    lines[81] = f'WIND_SCALING_FACTOR = {wind_scaling}\n'
     lines[86] = f'HOAR_THRESH_TA = {hoar_thresh_TA}\n'
     lines[87] = f'HOAR_THRESH_RH = {hoar_thresh_RH}\n'
     lines[88] = f'HOAR_THRESH_VW = {hoar_thresh_VW}\n'
+    lines[101] = f'HN_DENSITY_PARAMETERIZATION = {HN_density_model}\n'
+    lines[123] = f'ALBEDO_PARAMETERIZATION = {albedo_model}\n'
 
     # Save the modified ini file
     with open(ini_file, 'w') as f:
         f.writelines(lines)
-
+    f.close()
     # Modify .sno file
     sno_file = os.path.join(temp_dir, 'input/30_55_gnp.sno')
     with open(sno_file, 'r') as sno_model:
         lines = sno_model.readlines()
-
+    sno_model.close()
     #lines[30] = f'WindScalingFactor = {wind_scaling}\n'
 
     with open(sno_file, 'w') as sno_model:
         sno_model.writelines(lines)
-
+    sno_model.close()
     try:
         # Run Snowpack in the temporary directory
         snowpack_process = subprocess.Popen(
@@ -85,8 +90,7 @@ def run_snowpack(parameters):
             stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
         )
 
-        snow_stdout, snow_stderr = snowpack_process.communicate(timeout=300)  # 5 min timeout
-
+        snow_stdout, snow_stderr = snowpack_process.communicate()  # 5 min timeout
         if snowpack_process.returncode != 0:
             print(f"Snowpack error: {snow_stderr}")
 
@@ -106,16 +110,17 @@ def run_snowpack(parameters):
         )
         r_stdout, r_stderr = rscript_process.communicate()
         py_stdout, py_stderr = python_process.communicate()
-
-
         # Extract RMSE from stdout using regex
         match = re.search(r"F1:\s*([\d\.]+)", py_stdout)
+        match2 = re.search(r"RMSE_HS:\s*([\d\.]+)", py_stdout)
         if match:
             F1 = float(match.group(1))
+            rmse = float(match2.group(1))
         else:
             print("F1 not found in SNOWPACK output!")
             return float(1)
 
+        print(f"SNOWPACK RMSE HS: {rmse}")
         print(f"SNOWPACK F1: {F1}")
 
          # Extract similarity from stdout using regex
@@ -127,8 +132,8 @@ def run_snowpack(parameters):
             return float(1)
 
         print(f"SNOWPACK simi: {simi}")
-        print('FINAL score :', F1*0.5 + simi*0.5)
-        return float(F1*0.5 + simi*0.5)
+        print('FINAL score :', (F1*0.4 + simi*0.3 + rmse*0.3))
+        return float(F1*0.4 + simi*0.3 + rmse*0.3)
         #print('FINAL score :', simi)
         #return float(simi)
 
@@ -141,15 +146,16 @@ def run_snowpack(parameters):
         print(f"Error running SNOWPACK: {e}")
         return float("inf")
 
-    finally:
-        # Clean up: Delete temp directory after execution
-        shutil.rmtree(temp_dir, ignore_errors=True)
+    try:
+        shutil.rmtree(temp_dir)
+    except Exception as e:
+        print(f"Failed to delete temp directory: {e}")
 
 
 
 # Number of parallel evaluations per iteration
 n_parallel = 24
-n_iterations = 10 # Total Bayesian optimization iterations
+n_iterations = 5 # Total Bayesian optimization iterations
 
 # Bayesian optimizer using Gaussian Process
 optimizer = Optimizer(space, base_estimator="GP", acq_func="EI", random_state=2)

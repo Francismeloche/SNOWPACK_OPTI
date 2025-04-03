@@ -97,7 +97,8 @@ def run_snowpack(parameters):
         )
 
         py_stdout, py_stderr = python_process.communicate()
-
+        print(py_stdout)
+        print(py_stderr)
         # Extract RMSE from stdout using regex
         match = re.search(r"F1:\s*([\d\.]+)", py_stdout)
         if match:

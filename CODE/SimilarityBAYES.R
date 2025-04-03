@@ -162,8 +162,8 @@ caaml_folder <- './profil_2018-2019'
 #caaml_file   <- '20190208.caaml'
 # --- AXLIZ --- #
 
-#profile_vector <- c('20181104.caaml','20181210.caaml','20190108.caaml','20190208.caaml','20190308.caaml','20190405.caaml')
-profile_vector <- c('20190108.caaml','20190208.caaml','20190308.caaml')
+profile_vector <- c('20181104.caaml','20181210.caaml','20190108.caaml','20190208.caaml','20190308.caaml','20190405.caaml')
+#profile_vector <- c('20190108.caaml','20190208.caaml','20190308.caaml')
 simi = c()
 simi_wl = c()
 simi_cr = c()
