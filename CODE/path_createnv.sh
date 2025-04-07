@@ -11,7 +11,10 @@ export LD_LIBRARY_PATH="/home/fmeloche/meteoio/bin/lib:$LD_LIBRARY_PATH"
 export PATH="/home/fmeloche/snowpack/bin/bin:$PATH"
 export LD_LIBRARY_PATH="/home/fmeloche/snowpack/bin/lib:$LD_LIBRARY_PATH"
 
-module load python/3.11
-source ./env_opti/bin/activate
+module load python/3.11 scipy-stack
+virtualenv --no-download $SLURM_TMPDIR/env_opti
+source $SLURM_TMPDIR/env_opti/bin/activate
+pip install --no-index --upgrade pip
+pip install --no-index scikit-learn scikit-optimize joblib
 
 module load r/4.4.0

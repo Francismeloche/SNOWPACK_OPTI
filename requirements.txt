@@ -1,6 +1,6 @@
-numpy==2.2.2+computecanada
-pandas==2.2.3+computecanada
-python_dateutil==2.9.0.post0+computecanada
-pytz==2025.1+computecanada
-six==1.17.0+computecanada
-tzdata==2025.1+computecanada
+joblib==1.4.2+computecanada
+pyaml==20.4.0+computecanada
+PyYAML==6.0.2+computecanada
+scikit_learn==1.6.1+computecanada
+scikit_optimize==0.9.0+computecanada
+threadpoolctl==3.6.0+computecanada

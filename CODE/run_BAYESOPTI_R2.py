@@ -4,7 +4,6 @@ import os
 import sys
 import re
 from subprocess import TimeoutExpired
-import matplotlib.pyplot as plt
 
 from skopt import gp_minimize
 from skopt.space import Real, Integer, Categorical
@@ -25,7 +24,7 @@ space = [
     Real(-1, 6, name='thresh_rain'),
     Real(-1, 6, name='hoar_thresh_TA'),
     Real(0.6, 1, name='hoar_thresh_RH'),
-    Real(1, 10, name='hoar_thresh_VW'),
+    Real(0, 10, name='hoar_thresh_VW'),
     Integer(1,3, name = 'wind_scaling'),
     Categorical(['NEUTRAL', 'MO_LOG_LINEAR','MO_SCHLOEGL_MULTI','MO_SCHLOEGL_MULTI_OFFSET'], name = 'atmo_model'),
     Categorical(['LEHNING_0','LEHNING_1', 'LEHNING_2','SCHMUCKI_GSZ','SCHMUCKI_OGS'], name = 'albedo_model'),
@@ -37,6 +36,7 @@ import tempfile
 import uuid
 
 def run_snowpack(parameters):
+    year = "2020"
     # Unpack parameters
     thresh_rain, hoar_thresh_TA, hoar_thresh_RH, hoar_thresh_VW, wind_scaling, atmo_model, albedo_model, HN_density_model = parameters
 
@@ -57,13 +57,13 @@ def run_snowpack(parameters):
 
     # Modify parameters
     lines[9] = f'METEOPATH = {temp_dir}/input\n'
-    lines[11] = f'STATION1 = FidelityPatched_15min_2019.smet\n'
+    lines[11] = f'STATION1 = FidelityPatched_15min_'+year+'.smet\n'
     lines[20] = f'METEOPATH = {temp_dir}/output\n'
     lines[31] = f'SNOWPATH = {temp_dir}/output\n'
     lines[65] = f'ATMOSPHERIC_STABILITY = {atmo_model}\n'
     lines[84] = f'THRESH_RAIN = {thresh_rain}\n'
     lines[81] = f'WIND_SCALING_FACTOR = {wind_scaling}\n'
-    lines[86] = f'HOAR_THRESH_TA = {thresh_rain}\n'
+    lines[86] = f'HOAR_THRESH_TA = {hoar_thresh_TA}\n'
     lines[87] = f'HOAR_THRESH_RH = {hoar_thresh_RH}\n'
     lines[88] = f'HOAR_THRESH_VW = {hoar_thresh_VW}\n'
     lines[101] = f'HN_DENSITY_PARAMETERIZATION = {HN_density_model}\n'
@@ -78,7 +78,8 @@ def run_snowpack(parameters):
     with open(sno_file, 'r') as sno_model:
         lines = sno_model.readlines()
     sno_model.close()
-    #lines[30] = f'WindScalingFactor = {wind_scaling}\n'
+    lines[11] = f'ProfileDate      = '+str(int(year)-1)+'-09-04T23:00:00\n'
+    lines[30] = f'WindScalingFactor = {wind_scaling}\n'
 
     with open(sno_file, 'w') as sno_model:
         sno_model.writelines(lines)
@@ -86,7 +87,7 @@ def run_snowpack(parameters):
     try:
         # Run Snowpack in the temporary directory
         snowpack_process = subprocess.Popen(
-            ["snowpack", "-c", f"{temp_dir}/cfgfiles/ini_model", "-e", "2019-06-04T13:00:00"],
+            ["snowpack", "-c", f"{temp_dir}/cfgfiles/ini_model", "-e", year+"-06-04T13:00:00"],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
         )
 
@@ -95,21 +96,23 @@ def run_snowpack(parameters):
             print(f"Snowpack error: {snow_stderr}")
 
         # Run post-processing Python script
-        python_script_path = os.path.abspath("./CODE/Similarity_surfBAYES.py")
-        rscript_path = os.path.abspath("./CODE/SimilarityBAYES.R")
+        python_script_path = os.path.abspath("./CODE/Similarity_surfBAYES2.py")
+        rscript_path = os.path.abspath("./CODE/SimilarityBAYES2.R")
 
         python_process = subprocess.Popen(
-            [sys.executable, python_script_path, temp_dir],
+            [sys.executable, python_script_path, temp_dir,year],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
         )
-
+        
         # Run the R script
         rscript_process = subprocess.Popen(
-            ["Rscript", rscript_path, temp_dir],
+            ["Rscript", rscript_path, temp_dir,year],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
         )
         r_stdout, r_stderr = rscript_process.communicate()
         py_stdout, py_stderr = python_process.communicate()
+        print(r_stdout)
+        print(r_stderr) 
         # Extract RMSE from stdout using regex
         match = re.search(r"F1:\s*([\d\.]+)", py_stdout)
         match2 = re.search(r"RMSE_HS:\s*([\d\.]+)", py_stdout)
@@ -148,14 +151,19 @@ def run_snowpack(parameters):
 
     try:
         shutil.rmtree(temp_dir)
+        print(f"Directory {temp_dir} and its contents have been deleted successfully.")
+    except FileNotFoundError:
+        print(f"Directory {temp_dir} not found.")
+    except PermissionError:
+        print(f"Permission denied. Unable to delete {temp_dir}.")
     except Exception as e:
-        print(f"Failed to delete temp directory: {e}")
+        print(f"Error occurred: {e}")
 
 
 
 # Number of parallel evaluations per iteration
-n_parallel = 12
-n_iterations = 2 # Total Bayesian optimization iterations
+n_parallel = 4
+n_iterations = 1 # Total Bayesian optimization iterations
 
 # Bayesian optimizer using Gaussian Process
 optimizer = Optimizer(space, base_estimator="GP", acq_func="EI", random_state=2)
@@ -186,14 +194,15 @@ result = create_result(optimizer.Xi, optimizer.yi,
                              rng = optimizer.rng,
                              specs = optimizer.specs,
                              models = optimizer.models)
-dump(result, './CODE/result_opti2019.pkl')
+dump(result, './CODE/result_opti2020.pkl')
 
+import matplotlib.pyplot as plt
 try:
     # --- PLOT CONVERGENCE ---
     fig1, ax1 = plt.subplots(figsize=(8, 6))
     plot_convergence(result, ax=ax1)
     ax1.set_title("Bayesian Optimization Convergence")
-    plt.savefig("./CODE/convergence_plot2019.jpg", dpi=300,bbox_inches='tight')
+    plt.savefig("./CODE/convergence_plot2020.jpg", dpi=300,bbox_inches='tight')
     plt.close(fig1)
 
     # --- PLOT OBJECTIVE FUNCTION (if applicable) ---
@@ -201,7 +210,7 @@ try:
     fig2, ax2 = plt.subplots(figsize=(8, 6))
     plot_objective(result, sample_source ='result', n_points =5)
     ax2.set_title("Objective Function Landscape")
-    plt.savefig("./CODE/objective_plot2019.jpg", dpi=300,bbox_inches='tight')
+    plt.savefig("./CODE/objective_plot2020.jpg", dpi=300,bbox_inches='tight')
     plt.close(fig2)
 
     print("Plots saved: convergence_plot.jpg and (if applicable) objective_plot.jpg")

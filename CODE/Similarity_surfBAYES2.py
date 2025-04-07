@@ -12,8 +12,9 @@ print('in python script')
 #df = df.set_index(pd.DatetimeIndex(df['Timestamp'])) # je set ma nouvelle datetime comme index
 #df_grainOBS =df.loc[(df['Timestamp'] > '2018-10-01 00:00:00') & (df['Timestamp'] < '2019-04-29 00:00:00')]
 #df_grainOBS = df_grainOBS[['Timestamp','Snowpack', 'HN24', 'WeightNew', 'WaterEquivalent', 'Density', 'SurfaceFormID', 'SurfaceSize']]
+year = sys.argv[2]
 
-df_grainOBS = pd.read_pickle('./Wx_obs/FID_ManObs_precipSH.pkl')
+df_grainOBS = pd.read_pickle('./Wx_obs/FID_ManObs_precipSH'+year+'.pkl')
 df_grainOBS['SurfaceSize'] = pd.to_numeric(df_grainOBS['SurfaceSize'], errors='coerce')
 df_grainOBS['SurfaceSize'].plot()
 df_grainOBS['date'] = df_grainOBS['Timestamp'].dt.date
@@ -22,7 +23,6 @@ df_grainOBS['SurfaceFormID'] = df_grainOBS['SurfaceFormID'].replace(float('nan')
 
 #Load the snowpack profile
 root = sys.argv[1]
-
 snowpro_path = root + '/output/30_55_FID_1.0_PSUM_15m.pro'
 profs,meta = snowpro.read_pro( snowpro_path, res='1d', keep_soil=False, consider_surface_hoar=True)
 
@@ -48,7 +48,7 @@ for d,pro  in profs.items():
 df_grainMOD = pd.DataFrame({'datetime':date, 'gtype': gtype_season, 'gsize': gsize_season, 'hs':hs_season})
 df_grainMOD['date'] = df_grainMOD['datetime'].dt.date
 df_grainMOD['date'] = pd.to_datetime(df_grainMOD['date'])
-df_grainMOD =df_grainMOD.loc[(df_grainMOD['datetime'] > '2018-10-01 00:00:00') & (df_grainMOD['datetime'] <= '2019-05-1 00:00:00')]
+df_grainMOD =df_grainMOD.loc[(df_grainMOD['datetime'] > str(int(year)-1)+'-10-01 00:00:00') & (df_grainMOD['datetime'] <= str(year)+'-05-1 00:00:00')]
 
 #compute the similarity of grain type
 def gtype2float(gtype_str):
@@ -120,8 +120,11 @@ for idx,d in df_grainOBS.iterrows():
     gszmod = df_grainMOD['gsize'].loc[df_grainMOD['date'] == date].values[0]
     hs = d['Snowpack']
     hsmod = df_grainMOD['hs'].loc[df_grainMOD['date'] == date].values[0]
+    if hsmod == 'NA':
+        hsmod = 0
     err_hs = (hs-hsmod)**2
-    if gobs is not np.nan and gmod is not np.nan:
+    if gobs is not np.nan and gmod != 'NA':
+
         dist_g = sim_gtype(gobs,gmod)
         dist_gsize = ((gszobs - gszmod)**2)#**0.5
     else:
