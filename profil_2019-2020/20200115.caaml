@@ -84,7 +84,6 @@
         <caaml:depthTop uom="cm">0.0</caaml:depthTop>
         <caaml:thickness uom="cm">0.2</caaml:thickness>
         <caaml:grainFormPrimary>PPgp</caaml:grainFormPrimary>
-        <caaml:grainFormSecondary></caaml:grainFormSecondary>
         <caaml:grainSize uom="mm">
           <caaml:Components>
             <caaml:avg>2.0</caaml:avg>
@@ -118,7 +117,6 @@
         <caaml:depthTop uom="cm">18.2</caaml:depthTop>
         <caaml:thickness uom="cm">37.0</caaml:thickness>
         <caaml:grainFormPrimary>DF</caaml:grainFormPrimary>
-        <caaml:grainFormSecondary></caaml:grainFormSecondary>
         <caaml:grainSize uom="mm">
           <caaml:Components>
             <caaml:avg>0.5</caaml:avg>
@@ -135,7 +133,6 @@
         <caaml:depthTop uom="cm">55.2</caaml:depthTop>
         <caaml:thickness uom="cm">26.0</caaml:thickness>
         <caaml:grainFormPrimary>RG</caaml:grainFormPrimary>
-        <caaml:grainFormSecondary></caaml:grainFormSecondary>
         <caaml:grainSize uom="mm">
           <caaml:Components>
             <caaml:avg>0.5</caaml:avg>
@@ -152,7 +149,6 @@
         <caaml:depthTop uom="cm">81.2</caaml:depthTop>
         <caaml:thickness uom="cm">0.1</caaml:thickness>
         <caaml:grainFormPrimary>MFpc</caaml:grainFormPrimary>
-        <caaml:grainFormSecondary></caaml:grainFormSecondary>
         <caaml:grainSize uom="mm">
           <caaml:Components>
             <caaml:avg>1.0</caaml:avg>
@@ -169,7 +165,6 @@
         <caaml:depthTop uom="cm">81.3</caaml:depthTop>
         <caaml:thickness uom="cm">28.0</caaml:thickness>
         <caaml:grainFormPrimary>RG</caaml:grainFormPrimary>
-        <caaml:grainFormSecondary></caaml:grainFormSecondary>
         <caaml:grainSize uom="mm">
           <caaml:Components>
             <caaml:avg>0.5</caaml:avg>
@@ -186,14 +181,13 @@
         <caaml:depthTop uom="cm">109.3</caaml:depthTop>
         <caaml:thickness uom="cm">0.3</caaml:thickness>
         <caaml:grainFormPrimary>SHxr</caaml:grainFormPrimary>
-        <caaml:grainFormSecondary></caaml:grainFormSecondary>
         <caaml:grainSize uom="mm">
           <caaml:Components>
             <caaml:avg>3.0</caaml:avg>
             <caaml:avgMax></caaml:avgMax>
           </caaml:Components>
         </caaml:grainSize>
-        <caaml:hardness uom=""></caaml:hardness>
+        <caaml:hardness uom="">F</caaml:hardness>
         <caaml:wetness uom=""></caaml:wetness>
       </caaml:Layer>
       <caaml:Layer>
@@ -203,7 +197,6 @@
         <caaml:depthTop uom="cm">109.6</caaml:depthTop>
         <caaml:thickness uom="cm">23.0</caaml:thickness>
         <caaml:grainFormPrimary>FCxr</caaml:grainFormPrimary>
-        <caaml:grainFormSecondary></caaml:grainFormSecondary>
         <caaml:grainSize uom="mm">
           <caaml:Components>
             <caaml:avg>0.5</caaml:avg>
@@ -220,7 +213,6 @@
         <caaml:depthTop uom="cm">132.6</caaml:depthTop>
         <caaml:thickness uom="cm">48.0</caaml:thickness>
         <caaml:grainFormPrimary>FCxr</caaml:grainFormPrimary>
-        <caaml:grainFormSecondary></caaml:grainFormSecondary>
         <caaml:grainSize uom="mm">
           <caaml:Components>
             <caaml:avg>0.5</caaml:avg>
@@ -237,7 +229,6 @@
         <caaml:depthTop uom="cm">180.6</caaml:depthTop>
         <caaml:thickness uom="cm">0.1</caaml:thickness>
         <caaml:grainFormPrimary>RG</caaml:grainFormPrimary>
-        <caaml:grainFormSecondary></caaml:grainFormSecondary>
         <caaml:grainSize uom="mm">
           <caaml:Components>
             <caaml:avg>1.0</caaml:avg>
@@ -254,7 +245,6 @@
         <caaml:depthTop uom="cm">180.7</caaml:depthTop>
         <caaml:thickness uom="cm">21.0</caaml:thickness>
         <caaml:grainFormPrimary>FCxr</caaml:grainFormPrimary>
-        <caaml:grainFormSecondary></caaml:grainFormSecondary>
         <caaml:grainSize uom="mm">
           <caaml:Components>
             <caaml:avg>0.5</caaml:avg>
@@ -271,7 +261,6 @@
         <caaml:depthTop uom="cm">201.7</caaml:depthTop>
         <caaml:thickness uom="cm">26.0</caaml:thickness>
         <caaml:grainFormPrimary>FCxr</caaml:grainFormPrimary>
-        <caaml:grainFormSecondary></caaml:grainFormSecondary>
         <caaml:grainSize uom="mm">
           <caaml:Components>
             <caaml:avg>1.0</caaml:avg>
@@ -288,7 +277,6 @@
         <caaml:depthTop uom="cm">227.7</caaml:depthTop>
         <caaml:thickness uom="cm">7.0</caaml:thickness>
         <caaml:grainFormPrimary>MFpc</caaml:grainFormPrimary>
-        <caaml:grainFormSecondary></caaml:grainFormSecondary>
         <caaml:grainSize uom="mm">
           <caaml:Components>
             <caaml:avg>2.0</caaml:avg>
@@ -305,7 +293,6 @@
         <caaml:depthTop uom="cm">234.7</caaml:depthTop>
         <caaml:thickness uom="cm">26.0</caaml:thickness>
         <caaml:grainFormPrimary>FCxr</caaml:grainFormPrimary>
-        <caaml:grainFormSecondary></caaml:grainFormSecondary>
         <caaml:grainSize uom="mm">
           <caaml:Components>
             <caaml:avg>1.0</caaml:avg>
@@ -322,7 +309,6 @@
         <caaml:depthTop uom="cm">260.7</caaml:depthTop>
         <caaml:thickness uom="cm">2.0</caaml:thickness>
         <caaml:grainFormPrimary>MFpc</caaml:grainFormPrimary>
-        <caaml:grainFormSecondary></caaml:grainFormSecondary>
         <caaml:grainSize uom="mm">
           <caaml:Components>
             <caaml:avg>2.0</caaml:avg>
@@ -339,7 +325,6 @@
         <caaml:depthTop uom="cm">262.7</caaml:depthTop>
         <caaml:thickness uom="cm">18.0</caaml:thickness>
         <caaml:grainFormPrimary>FCxr</caaml:grainFormPrimary>
-        <caaml:grainFormSecondary></caaml:grainFormSecondary>
         <caaml:grainSize uom="mm">
           <caaml:Components>
             <caaml:avg>1.0</caaml:avg>
@@ -369,16 +354,8 @@
         <caaml:snowTemp uom="degC">-7.5</caaml:snowTemp>
       </caaml:Obs>
       <caaml:Obs>
-        <caaml:depth uom="cm">81.2</caaml:depth>
-        <caaml:snowTemp uom="degC">nan</caaml:snowTemp>
-      </caaml:Obs>
-      <caaml:Obs>
         <caaml:depth uom="cm">81.3</caaml:depth>
         <caaml:snowTemp uom="degC">-6.5</caaml:snowTemp>
-      </caaml:Obs>
-      <caaml:Obs>
-        <caaml:depth uom="cm">109.3</caaml:depth>
-        <caaml:snowTemp uom="degC">nan</caaml:snowTemp>
       </caaml:Obs>
       <caaml:Obs>
         <caaml:depth uom="cm">109.6</caaml:depth>
@@ -387,10 +364,6 @@
       <caaml:Obs>
         <caaml:depth uom="cm">132.6</caaml:depth>
         <caaml:snowTemp uom="degC">-3.8499999046325684</caaml:snowTemp>
-      </caaml:Obs>
-      <caaml:Obs>
-        <caaml:depth uom="cm">180.6</caaml:depth>
-        <caaml:snowTemp uom="degC">nan</caaml:snowTemp>
       </caaml:Obs>
       <caaml:Obs>
         <caaml:depth uom="cm">180.7</caaml:depth>
@@ -497,3 +470,6 @@
         <caaml:thickness uom="cm">18.0</caaml:thickness>
         <caaml:density uom="kgm-3">360.0</caaml:density>
       </caaml:Layer>
+  </caaml:SnowProfileMeasurements>
+</caaml:snowProfileResultsOf>
+</caaml:SnowProfile>

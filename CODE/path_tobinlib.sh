@@ -11,7 +11,7 @@ export LD_LIBRARY_PATH="/home/fmeloche/meteoio/bin/lib:$LD_LIBRARY_PATH"
 export PATH="/home/fmeloche/snowpack/bin/bin:$PATH"
 export LD_LIBRARY_PATH="/home/fmeloche/snowpack/bin/lib:$LD_LIBRARY_PATH"
 
-module load python/3.11
+module load python/3.11 scipy-stack
 source ./env_opti/bin/activate
 
 module load r/4.4.0

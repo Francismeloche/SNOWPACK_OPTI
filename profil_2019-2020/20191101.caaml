@@ -79,14 +79,13 @@
         <caaml:depthTop uom="cm">0.0</caaml:depthTop>
         <caaml:thickness uom="cm">0.2</caaml:thickness>
         <caaml:grainFormPrimary>SH</caaml:grainFormPrimary>
-        <caaml:grainFormSecondary></caaml:grainFormSecondary>
         <caaml:grainSize uom="mm">
           <caaml:Components>
             <caaml:avg>2.0</caaml:avg>
             <caaml:avgMax></caaml:avgMax>
           </caaml:Components>
         </caaml:grainSize>
-        <caaml:hardness uom=""></caaml:hardness>
+        <caaml:hardness uom="">F</caaml:hardness>
         <caaml:wetness uom=""></caaml:wetness>
       </caaml:Layer>
       <caaml:Layer>
@@ -96,7 +95,6 @@
         <caaml:depthTop uom="cm">0.2</caaml:depthTop>
         <caaml:thickness uom="cm">1.0</caaml:thickness>
         <caaml:grainFormPrimary>PP</caaml:grainFormPrimary>
-        <caaml:grainFormSecondary></caaml:grainFormSecondary>
         <caaml:grainSize uom="mm">
           <caaml:Components>
             <caaml:avg>2.0</caaml:avg>
@@ -113,7 +111,6 @@
         <caaml:depthTop uom="cm">1.2</caaml:depthTop>
         <caaml:thickness uom="cm">12.0</caaml:thickness>
         <caaml:grainFormPrimary>RG</caaml:grainFormPrimary>
-        <caaml:grainFormSecondary></caaml:grainFormSecondary>
         <caaml:grainSize uom="mm">
           <caaml:Components>
             <caaml:avg>0.5</caaml:avg>
@@ -130,7 +127,6 @@
         <caaml:depthTop uom="cm">13.2</caaml:depthTop>
         <caaml:thickness uom="cm">1.0</caaml:thickness>
         <caaml:grainFormPrimary>MFpc</caaml:grainFormPrimary>
-        <caaml:grainFormSecondary></caaml:grainFormSecondary>
         <caaml:grainSize uom="mm">
           <caaml:Components>
             <caaml:avg>1.0</caaml:avg>
@@ -147,7 +143,6 @@
         <caaml:depthTop uom="cm">14.2</caaml:depthTop>
         <caaml:thickness uom="cm">13.0</caaml:thickness>
         <caaml:grainFormPrimary>RG</caaml:grainFormPrimary>
-        <caaml:grainFormSecondary></caaml:grainFormSecondary>
         <caaml:grainSize uom="mm">
           <caaml:Components>
             <caaml:avg>1.0</caaml:avg>
@@ -164,7 +159,6 @@
         <caaml:depthTop uom="cm">27.2</caaml:depthTop>
         <caaml:thickness uom="cm">19.0</caaml:thickness>
         <caaml:grainFormPrimary>RG</caaml:grainFormPrimary>
-        <caaml:grainFormSecondary></caaml:grainFormSecondary>
         <caaml:grainSize uom="mm">
           <caaml:Components>
             <caaml:avg>0.5</caaml:avg>
@@ -181,7 +175,6 @@
         <caaml:depthTop uom="cm">46.2</caaml:depthTop>
         <caaml:thickness uom="cm">2.0</caaml:thickness>
         <caaml:grainFormPrimary>MFpc</caaml:grainFormPrimary>
-        <caaml:grainFormSecondary></caaml:grainFormSecondary>
         <caaml:grainSize uom="mm">
           <caaml:Components>
             <caaml:avg>1.0</caaml:avg>
@@ -198,7 +191,6 @@
         <caaml:depthTop uom="cm">48.2</caaml:depthTop>
         <caaml:thickness uom="cm">11.0</caaml:thickness>
         <caaml:grainFormPrimary>FCxr</caaml:grainFormPrimary>
-        <caaml:grainFormSecondary></caaml:grainFormSecondary>
         <caaml:grainSize uom="mm">
           <caaml:Components>
             <caaml:avg>1.0</caaml:avg>
@@ -215,7 +207,6 @@
         <caaml:depthTop uom="cm">59.2</caaml:depthTop>
         <caaml:thickness uom="cm">9.0</caaml:thickness>
         <caaml:grainFormPrimary>MFpc</caaml:grainFormPrimary>
-        <caaml:grainFormSecondary></caaml:grainFormSecondary>
         <caaml:grainSize uom="mm">
           <caaml:Components>
             <caaml:avg>1.0</caaml:avg>
@@ -242,7 +233,7 @@
       </caaml:Obs>
       <caaml:Obs>
         <caaml:depth uom="cm">13.2</caaml:depth>
-        <caaml:snowTemp uom="degC"></caaml:snowTemp>
+        <caaml:snowTemp uom="degC">-7.8</caaml:snowTemp>
       </caaml:Obs>
       <caaml:Obs>
         <caaml:depth uom="cm">14.2</caaml:depth>
@@ -310,3 +301,6 @@
         <caaml:thickness uom="cm">9.0</caaml:thickness>
         <caaml:density uom="kgm-3">320.0</caaml:density>
       </caaml:Layer>
+  </caaml:SnowProfileMeasurements>
+</caaml:snowProfileResultsOf>
+</caaml:SnowProfile>

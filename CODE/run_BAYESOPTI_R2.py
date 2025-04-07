@@ -28,7 +28,8 @@ space = [
     Integer(1,3, name = 'wind_scaling'),
     Categorical(['NEUTRAL', 'MO_LOG_LINEAR','MO_SCHLOEGL_MULTI','MO_SCHLOEGL_MULTI_OFFSET'], name = 'atmo_model'),
     Categorical(['LEHNING_0','LEHNING_1', 'LEHNING_2','SCHMUCKI_GSZ','SCHMUCKI_OGS'], name = 'albedo_model'),
-    Categorical(['LEHNING_NEW','BELLAIRE','ZWART','PAHAUT','NIED','VANKAMPENHOUT'], name = 'HN_density_model')
+    Categorical(['LEHNING_NEW','BELLAIRE'], name = 'HN_density_model')
+    #Categorical(['LEHNING_NEW','BELLAIRE','ZWART','PAHAUT','NIED','VANKAMPENHOUT'], name = 'HN_density_model')
 ]
 
 import shutil
@@ -111,8 +112,6 @@ def run_snowpack(parameters):
         )
         r_stdout, r_stderr = rscript_process.communicate()
         py_stdout, py_stderr = python_process.communicate()
-        print(r_stdout)
-        print(r_stderr) 
         # Extract RMSE from stdout using regex
         match = re.search(r"F1:\s*([\d\.]+)", py_stdout)
         match2 = re.search(r"RMSE_HS:\s*([\d\.]+)", py_stdout)
@@ -162,8 +161,8 @@ def run_snowpack(parameters):
 
 
 # Number of parallel evaluations per iteration
-n_parallel = 4
-n_iterations = 1 # Total Bayesian optimization iterations
+n_parallel = 24
+n_iterations = 5 # Total Bayesian optimization iterations
 
 # Bayesian optimizer using Gaussian Process
 optimizer = Optimizer(space, base_estimator="GP", acq_func="EI", random_state=2)

@@ -160,13 +160,15 @@ simdfall <- data.frame(simu_id = c(),date = c(), simi = c(), wl = c(), cr = c(),
 
 pro_file     <- 'output/30_55_FID_1.0_PSUM_15m.pro'
 PROFS_MOD   <- paste(path_topro_folder, pro_file, sep="/")
-#caaml_folder <- './profil_2018-2019'
-caaml_folder <- './profil_2019-2020'
-#caaml_file   <- '20190208.caaml'
-# --- AXLIZ --- #
 
-#profile_vector <- c('20181104.caaml','20181210.caaml','20190108.caaml','20190208.caaml','20190308.caaml','20190405.caaml')
-profile_vector <- c('20191101.caaml','20191213.caaml','20200115.caaml','20200210.caaml','20200310.caaml','20200412.caaml')
+print(year)
+if (year == '2019'){
+  caaml_folder <- './profil_2018-2019'
+  profile_vector <- c('20181104.caaml','20181210.caaml','20190108.caaml','20190208.caaml','20190308.caaml','20190405.caaml')
+} else {
+  caaml_folder <- './profil_2019-2020'
+  profile_vector <- c('20191101.caaml','20191213.caaml','20200115.caaml','20200210.caaml','20200310.caaml','20200412.caaml')
+}
 
 #profile_vector <- c('20190108.caaml','20190208.caaml','20190308.caaml')
 simi = c()
