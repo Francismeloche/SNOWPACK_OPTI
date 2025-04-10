@@ -44,6 +44,10 @@ for d,pro  in profs.items():
         gtype_season.append('NA')
         gsize_season.append('NA')
         hs_season.append('NA')
+    if gtype == 'MFcr':
+        gtype = 'MF'
+    if gtype == 'WG':
+        gtype = 'MF'
 
 df_grainMOD = pd.DataFrame({'datetime':date, 'gtype': gtype_season, 'gsize': gsize_season, 'hs':hs_season})
 df_grainMOD['date'] = df_grainMOD['datetime'].dt.date
@@ -165,13 +169,25 @@ PP_FP = dist_df[(dist_df['dist_gtype'] > 0.9) & (dist_df['gtype_mod'] == 'PP')].
 PP_tot = dist_df[dist_df['gtype_obs'] == 'PP'].count()
 PP_F1 = 2*PP_TP['gtype_obs']/(2*PP_TP['gtype_obs'] + PP_FP['gtype_obs'] + PP_FN['gtype_obs'])
 
+# Compute the confusion matrix of the MF modelisatio
+MF_TP = dist_df[(dist_df['dist_gtype'] < 0.1) & (dist_df['gtype_obs'] == 'MF')].count()
+MF_realmod = dist_df[(dist_df['dist_gtype'] < 0.1) & (dist_df['gtype_obs'] == 'MF')]
+MF_TN = dist_df[(dist_df['dist_gtype'] < 0.1) & (dist_df['gtype_obs'] != 'MF')].count()
+MF_FN = dist_df[(dist_df['dist_gtype'] > 0.9) & (dist_df['gtype_obs'] == 'MF')].count()
+MF_FP = dist_df[(dist_df['dist_gtype'] > 0.9) & (dist_df['gtype_mod'] == 'MF')].count()
+MF_tot = dist_df[dist_df['gtype_obs'] == 'PP'].count()
+MF_F1 = 2*MF_TP['gtype_obs']/(2*MF_TP['gtype_obs'] + MF_FP['gtype_obs'] + MF_FN['gtype_obs'])
+
 meanTPSH_dgsize = SH_realmod['dist_gsize'].mean()**0.5
 meanTPPP_dgsize = PP_realmod['dist_gsize'].mean()**0.5
-F1 = 1-(SH_F1*0.6 + PP_F1*0.4)
+if np.isnan(meanTPSH_dgsize):
+    print('NANA')
+    meanTPSH_dgsize = 10
+F1 = ((1-SH_F1)*0.7) + ((meanTPSH_dgsize/10)*0.3)
 rmseHS = (rmse_hs/1000)
 print('RMSE_HS: ', rmseHS)
+print('mean SH Dsz', meanTPSH_dgsize/10)
 print('F1: ', F1)
-
 #df_SHfinal = pd.DataFrame({'SH_TP':SH_TP['gtype_obs'], 'SH_TN':SH_TN['gtype_obs'], 'SH_FN':SH_FN['gtype_obs'], 'SH_FP':SH_FP['gtype_mod'], 'SH_tot':SH_tot['gtype_obs'], 'F1':F1, 'meanTPSH_dgsize':meanTPSH_dgsize}, index=[0])
 #df_PPfinal = pd.DataFrame({'PP_TP':PP_TP['gtype_obs'], 'PP_TN':PP_TN['gtype_obs'], 'PP_FN':PP_FN['gtype_obs'], 'PP_FP':PP_FP['gtype_mod'], 'PP_tot':PP_tot['gtype_obs'], 'F1':F1, 'meanTPPP_dgsize':meanTPPP_dgsize}, index=[0])
 #df_final = pd.DataFrame({'F1': F1, 'meanTPSH_dgsize': meanTPSH_dgsize}, index=[0])

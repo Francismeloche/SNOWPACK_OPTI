@@ -21,26 +21,29 @@ ROOT = os.path.abspath("./MODEL_15minBAYES/")
 
 # Define the search space for SNOWPACK parameters
 space = [
-    Real(-1, 6, name='thresh_rain'),
-    Real(-1, 6, name='hoar_thresh_TA'),
+    #Real(-1, 6, name='thresh_rain'),
+    #Real(-2, 10, name='hoar_thresh_TA'),
     Real(0.6, 1, name='hoar_thresh_RH'),
     Real(0, 10, name='hoar_thresh_VW'),
-    Integer(1,3, name = 'wind_scaling'),
-    Categorical(['NEUTRAL', 'MO_LOG_LINEAR','MO_SCHLOEGL_MULTI','MO_SCHLOEGL_MULTI_OFFSET'], name = 'atmo_model'),
+    Integer(100, 150, name='hoar_density_buried'),
+    Real(0.5, 5, name='hoar_min_sz_buried'),
+    Integer(70, 150, name='hoar_density_surf'),
+    #Integer(1,3, name = 'wind_scaling'),
+    Categorical(['NEUTRAL','MO_LOG_LINEAR','MO_SCHLOEGL_MULTI','MO_SCHLOEGL_MULTI_OFFSET'], name = 'atmo_model'),
     Categorical(['LEHNING_0','LEHNING_1', 'LEHNING_2','SCHMUCKI_GSZ','SCHMUCKI_OGS'], name = 'albedo_model'),
-    Categorical(['LEHNING_NEW','BELLAIRE'], name = 'HN_density_model')
+    #Categorical(['LEHNING_NEW','BELLAIRE'], name = 'HN_density_model')
     #Categorical(['LEHNING_NEW','BELLAIRE','ZWART','PAHAUT','NIED','VANKAMPENHOUT'], name = 'HN_density_model')
 ]
 
 import shutil
 import tempfile
 import uuid
-years = ['2019']
+years = ['2019','2020']
 def run_snowpack(parameters):
     final_year = []
     for year in years:
         # Unpack parameters
-        thresh_rain, hoar_thresh_TA, hoar_thresh_RH, hoar_thresh_VW, wind_scaling, atmo_model, albedo_model, HN_density_model = parameters
+        hoar_thresh_RH, hoar_thresh_VW, hoar_density_buried, hoar_min_sz_buried, hoar_density_surf, atmo_model, albedo_model = parameters
 
         # Create a unique temporary directory for this run in PARALLEL RUNNING
         temp_dir = os.path.join(ROOT, "temp_run", f"run_{uuid.uuid4().hex}")  # Unique per process
@@ -63,12 +66,15 @@ def run_snowpack(parameters):
         lines[20] = f'METEOPATH = {temp_dir}/output\n'
         lines[31] = f'SNOWPATH = {temp_dir}/output\n'
         lines[65] = f'ATMOSPHERIC_STABILITY = {atmo_model}\n'
-        lines[84] = f'THRESH_RAIN = {thresh_rain}\n'
-        lines[81] = f'WIND_SCALING_FACTOR = {wind_scaling}\n'
-        lines[86] = f'HOAR_THRESH_TA = {hoar_thresh_TA}\n'
+        #lines[84] = f'THRESH_RAIN = {thresh_rain}\n'
+        #lines[81] = f'WIND_SCALING_FACTOR = {wind_scaling}\n'
+        #lines[86] = f'HOAR_THRESH_TA = {hoar_thresh_TA}\n'
         lines[87] = f'HOAR_THRESH_RH = {hoar_thresh_RH}\n'
         lines[88] = f'HOAR_THRESH_VW = {hoar_thresh_VW}\n'
-        lines[101] = f'HN_DENSITY_PARAMETERIZATION = {HN_density_model}\n'
+        lines[89] = f'HOAR_DENSITY_BURIED = {hoar_density_buried}\n'
+        lines[90] = f'HOAR_MIN_SIZE_BURIED = {hoar_min_sz_buried}\n'
+        lines[91] = f'HOAR_DENSITY_SURF = {hoar_density_surf}\n'
+        #lines[101] = f'HN_DENSITY_PARAMETERIZATION = {HN_density_model}\n'
         lines[123] = f'ALBEDO_PARAMETERIZATION = {albedo_model}\n'
 
         # Save the modified ini file
@@ -81,7 +87,7 @@ def run_snowpack(parameters):
             lines = sno_model.readlines()
         sno_model.close()
         lines[11] = f'ProfileDate      = '+str(int(year)-1)+'-09-04T23:00:00\n'
-        lines[30] = f'WindScalingFactor = {wind_scaling}\n'
+        #lines[30] = f'WindScalingFactor = {wind_scaling}\n'
 
         with open(sno_file, 'w') as sno_model:
             sno_model.writelines(lines)
@@ -113,6 +119,7 @@ def run_snowpack(parameters):
             )
             r_stdout, r_stderr = rscript_process.communicate()
             py_stdout, py_stderr = python_process.communicate()
+            
             # Extract RMSE from stdout using regex
             match = re.search(r"F1:\s*([\d\.]+)", py_stdout)
             match2 = re.search(r"RMSE_HS:\s*([\d\.]+)", py_stdout)
@@ -122,6 +129,7 @@ def run_snowpack(parameters):
             else:
                 print("F1 not found in SNOWPACK output!")
                 F1 = float(1)
+                rmse = float(1)
 
             print(f"SNOWPACK RMSE HS: {rmse}")
             print(f"SNOWPACK F1: {F1}")
@@ -197,7 +205,7 @@ result = create_result(optimizer.Xi, optimizer.yi,
                              rng = optimizer.rng,
                              specs = optimizer.specs,
                              models = optimizer.models)
-dump(result, './CODE/result_opti2019.pkl')
+dump(result, './CODE/result_optiSH2019-2020.pkl')
 
 import matplotlib.pyplot as plt
 try:
@@ -205,7 +213,7 @@ try:
     fig1, ax1 = plt.subplots(figsize=(8, 6))
     plot_convergence(result, ax=ax1)
     ax1.set_title("Bayesian Optimization Convergence")
-    plt.savefig("./CODE/convergence_plot2019.jpg", dpi=300,bbox_inches='tight')
+    plt.savefig("./CODE/convergence_plotSH2019-2020.jpg", dpi=300,bbox_inches='tight')
     plt.close(fig1)
 
     # --- PLOT OBJECTIVE FUNCTION (if applicable) ---
@@ -213,7 +221,7 @@ try:
     fig2, ax2 = plt.subplots(figsize=(8, 6))
     plot_objective(result, sample_source ='result', n_points =5)
     ax2.set_title("Objective Function Landscape")
-    plt.savefig("./CODE/objective_plot2019.jpg", dpi=300,bbox_inches='tight')
+    plt.savefig("./CODE/objective_plotSH2019-2020.jpg", dpi=300,bbox_inches='tight')
     plt.close(fig2)
 
     print("Plots saved: convergence_plot.jpg and (if applicable) objective_plot.jpg")
